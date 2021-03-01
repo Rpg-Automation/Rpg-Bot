@@ -2,14 +2,14 @@
   "name": "tsbase",
   "version": "1.0.0",
   "description": "a base node.js ts project",
-  "main": "build/index.js",
+  "main": "./build/index.js",
   "scripts": {
     "prebuild": "eslint --fix --ext .ts,.tsx .",
     "postinstall": "npm run build",
     "build": "tsc",
     "prestart": "npm run build",
     "watch": "tsc --watch",
-    "start": "node ./build/index.js"
+    "start": "node ."
   },
   "author": "jude giordano",
   "license": "ISC",
