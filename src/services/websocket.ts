@@ -11,4 +11,12 @@ export default class WebSocket {
 	public static Request(id: string) {
 		WebSocket.socket.emit("request", { test: `req from user ${id}` });
 	}
+
+	public static Stop(id: string) {
+		WebSocket.socket.emit("stop-loop", id);
+	}
+
+	public static Start(id: string) {
+		WebSocket.socket.emit("start-loop", id);
+	}
 }

@@ -7,8 +7,7 @@ const config = {
 };
 
 if (!config.BOT_TOKEN) {
-	console.error("missing BOT_TOKEN");
-	process.exit(-1);
+	throw new Error("missing BOT_TOKEN");
 }
 
 export default config;
