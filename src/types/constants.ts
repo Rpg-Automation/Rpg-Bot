@@ -17,3 +17,10 @@ export enum Env {
 	dev = "development",
 	prod = "production"
 }
+
+export enum UserCmds {
+	prefix = "epic",
+	resume = "resume",
+	ping = "ping",
+	pong = "pong"
+}
