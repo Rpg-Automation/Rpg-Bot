@@ -15,6 +15,10 @@ export default class UserHandler {
 			const userId: string = msg.author.id;
 			WebSocket.Start(userId);
 		}
+		if (content.trim().toLowerCase() == UserCmds.pause) {
+			const userId: string = msg.author.id;
+			WebSocket.Stop(userId);
+		}
 		else if (content.trim().toLowerCase() == UserCmds.ping) {
 			msg.channel.send("epic pong");
 		}
