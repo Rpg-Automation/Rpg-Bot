@@ -8,7 +8,7 @@ export default class UserHandler {
 			msg.channel.send("pong");
 		}
 		else if (/.*pong.*/gmi.test(msg.content)) {
-			msg.channel.send("ping");
+			msg.channel.send("> UNHANDLED ERROR EXPECPTION /.*@#*(ping)#$)&(*#$)#*$#@@*/");
 		}
 	}
 }
