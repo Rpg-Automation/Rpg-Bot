@@ -15,15 +15,19 @@ client.on("ready", () => {
 });
 
 client.on("message", (msg: Message) => {
-	switch (msg.author.id) {
-		case Ids.self:
-			return;
+	try {
+		switch (msg.author.id) {
+			case Ids.self:
+				return;
 
-		case Ids.rpgBot:
-			return BotHandler.HandleMessage(msg, client);
+			case Ids.rpgBot:
+				return BotHandler.HandleMessage(msg, client);
 
-		default:
-			return UserHandler.HandleMessage(msg);
+			default:
+				return UserHandler.HandleMessage(msg);
+		}
+	} catch (error) {
+		console.log(error);
 	}
 });
 
