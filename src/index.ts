@@ -1,6 +1,8 @@
+/* eslint-disable indent */
 import { Client, Message } from "discord.js";
 
 import config from "./helpers/config";
+import WebSocket from "./services/websocket";
 import { Ids } from "./types/constants";
 import BotHandler from "./handlers/botHandler";
 import UserHandler from "./handlers/userHandler";
@@ -8,19 +10,20 @@ import UserHandler from "./handlers/userHandler";
 const client: Client = new Client();
 
 client.on("ready", () => {
-	console.log(`${new Date}\nLogged in as ${client.user.tag}!`);
+	WebSocket.Creds(Ids.self);
+	console.log(`${new Date}\nLogged in as ${client.user.tag} in ${config.NODE_ENV}`);
 });
 
 client.on("message", (msg: Message) => {
 	switch (msg.author.id) {
-	case Ids.self:
-		return;
+		case Ids.self:
+			return;
 
-	case Ids.rpgBot:
-		return BotHandler.HandleMessage(msg);
+		case Ids.rpgBot:
+			return BotHandler.HandleMessage(msg, client);
 
-	default:
-		return UserHandler.HandleMessage(msg);
+		default:
+			return UserHandler.HandleMessage(msg);
 	}
 });
 

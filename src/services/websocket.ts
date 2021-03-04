@@ -1,22 +1,27 @@
 import { io, Socket } from "socket.io-client";
 
-import { ISocketUri } from "../types/constants";
+import { SocketUri } from "../types/constants";
+import config from "../helpers/config";
 
 export default class WebSocket {
 
-	private static uri: string = ISocketUri.dev;
+	private static uri: string = (config.IS_PROD ? SocketUri.prod : SocketUri.dev);
 
 	private static socket: Socket = io(WebSocket.uri);
+
+	public static Creds(id: string) {
+		WebSocket.socket.emit("oauth-creds", id);
+	}
 
 	public static Request(id: string) {
 		WebSocket.socket.emit("request", { test: `req from user ${id}` });
 	}
 
 	public static Stop(id: string) {
-		WebSocket.socket.emit("stop-loop", id);
+		WebSocket.socket.emit("request-stop", id);
 	}
 
 	public static Start(id: string) {
-		WebSocket.socket.emit("start-loop", id);
+		WebSocket.socket.emit("request-start", id);
 	}
 }

@@ -8,7 +8,12 @@ export enum Ids {
 	rpgBot = "555955826880413696"
 }
 
-export enum ISocketUri {
+export enum SocketUri {
 	dev = "http://127.0.0.1:3000",
 	prod = "https://rpg-rtc.herokuapp.com/"
+}
+
+export enum Env {
+	dev = "development",
+	prod = "production"
 }
