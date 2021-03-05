@@ -7,7 +7,7 @@ export default class UserHandler {
 
 	public static HandleMessage(msg: Message) {
 
-		if (!msg.content.startsWith(UserCmds.prefix)) return;
+		if (!msg.content.trim().toLowerCase().startsWith(UserCmds.prefix)) return;
 
 		const content: string = msg.content.split(UserCmds.prefix)[1];
 
