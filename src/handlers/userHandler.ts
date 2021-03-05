@@ -7,22 +7,23 @@ export default class UserHandler {
 
 	public static HandleMessage(msg: Message) {
 
-		if (!msg.content.trim().toLowerCase().startsWith(UserCmds.prefix)) return;
+		const pref: string = msg.content.trim().split(" ")[0].toLowerCase().trim();
+		const arg: string = msg.content.trim().split(" ")[1].toLowerCase().trim();
 
-		const content: string = msg.content.split(UserCmds.prefix)[1];
+		if (pref !== UserCmds.prefix) return;
 
-		if (content.trim().toLowerCase() == UserCmds.start) {
+		if (arg == UserCmds.start) {
 			const userId: string = msg.author.id;
 			WebSocket.Start(userId);
 		}
-		if (content.trim().toLowerCase() == UserCmds.stop) {
+		if (arg == UserCmds.stop) {
 			const userId: string = msg.author.id;
 			WebSocket.Stop(userId);
 		}
-		else if (content.trim().toLowerCase() == UserCmds.ping) {
+		else if (arg == UserCmds.ping) {
 			msg.channel.send("epic pong");
 		}
-		else if (content.trim().toLowerCase() == UserCmds.pong) {
+		else if (arg == UserCmds.pong) {
 			msg.channel.send("> UNHANDLED ERROR EXPECPTION /.*^.*(epic pong)@$)&(*#$).*$^.*/");
 		}
 	}
