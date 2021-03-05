@@ -11,7 +11,7 @@ export default class BotHandler {
 
 			const userId: string = mention.id;
 			client.users.cache.get(userId).send(`<@${userId.toString()}> Epic Guard Detected! ${msg.url}`);
-			WebSocket.Stop(userId);
+			WebSocket.Pause(userId);
 		}
 		//else if (/.*(epic guard).*(everything seems fine)/gmi.test(msg.content)) {
 		//	const guildId: string = msg.guild.id;
@@ -19,7 +19,7 @@ export default class BotHandler {
 		//	const user: string = msg.content.split("fine ")[1].split(",")[0];
 
 		//	const userId: string = guild.members.cache.find(a => a.user.username.trim() == user.trim()).id;
-		//	WebSocket.Start(userId);
+		//	WebSocket.Resume(userId);
 		//}
 	}
 }

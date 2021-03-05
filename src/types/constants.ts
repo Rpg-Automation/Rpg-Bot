@@ -20,8 +20,8 @@ export enum Env {
 
 export enum UserCmds {
 	prefix = "epic",
-	resume = "resume",
-	pause = "pause",
+	start = "start",
+	stop = "stop",
 	ping = "ping",
 	pong = "pong"
 }

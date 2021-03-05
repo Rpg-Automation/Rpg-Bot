@@ -11,11 +11,11 @@ export default class UserHandler {
 
 		const content: string = msg.content.split(UserCmds.prefix)[1];
 
-		if (content.trim().toLowerCase() == UserCmds.resume) {
+		if (content.trim().toLowerCase() == UserCmds.start) {
 			const userId: string = msg.author.id;
 			WebSocket.Start(userId);
 		}
-		if (content.trim().toLowerCase() == UserCmds.pause) {
+		if (content.trim().toLowerCase() == UserCmds.stop) {
 			const userId: string = msg.author.id;
 			WebSocket.Stop(userId);
 		}

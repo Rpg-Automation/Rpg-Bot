@@ -24,4 +24,12 @@ export default class WebSocket {
 	public static Start(id: string) {
 		WebSocket.socket.emit("request-start", id);
 	}
+
+	public static Pause(id: string) {
+		WebSocket.socket.emit("request-pause", id);
+	}
+
+	public static Resume(id: string) {
+		WebSocket.socket.emit("request-resume", id);
+	}
 }
