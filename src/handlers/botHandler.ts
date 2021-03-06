@@ -6,7 +6,16 @@ export default class BotHandler {
 
 	public static HandleMessage(msg: Message, client: Client) {
 
-		if (/.*(epic guard).*/gmi.test(msg.content)) {
+		if (/.*(epic guard).*(everything seems fine)/gmi.test(msg.content)) {
+			const guildId: string = msg.guild.id;
+			const guild: Guild = client.guilds.cache.find(a => a.id == guildId);
+			const user: string = msg.content.split("fine ")[1].split(",")[0];
+
+			const userId: string = guild.members.cache.find(a => a.user.username.trim() == user.trim()).id;
+			WebSocket.Resume(userId);
+			return msg.channel.send("> Automation Started");
+		}
+		if (/.*(epic guard).*(stop there).*/gmi.test(msg.content)) {
 			const mention: GuildMember = msg.mentions.members.first();
 			if (!mention) return;
 
@@ -14,15 +23,6 @@ export default class BotHandler {
 			client.users.cache.get(userId).send(`<@${userId.toString()}> Epic Guard Detected! ${msg.url}`);
 			WebSocket.Pause(userId);
 			msg.channel.send("> Automation Stopped");
-		}
-		else if (/.*(epic guard).*(everything seems fine)/gmi.test(msg.content)) {
-			const guildId: string = msg.guild.id;
-			const guild: Guild = client.guilds.cache.find(a => a.id == guildId);
-			const user: string = msg.content.split("fine ")[1].split(",")[0];
-
-			const userId: string = guild.members.cache.find(a => a.user.username.trim() == user.trim()).id;
-			WebSocket.Resume(userId);
-			msg.channel.send("> Automation Started");
 		}
 	}
 
