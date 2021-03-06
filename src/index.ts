@@ -14,13 +14,16 @@ client.on("ready", () => {
 	console.log(`${new Date}\nLogged in as ${client.user.tag} in ${config.NODE_ENV}`);
 });
 
-client.on("message", (msg: Message) => {
+client.on("message", async (msg: Message) => {
 	try {
 		switch (msg.author.id) {
 			case Ids.self:
 				return;
 
 			case Ids.rpgBot:
+				if (msg.embeds.length >= 1) {
+					await BotHandler.HandleEmbed(msg);
+				}
 				return BotHandler.HandleMessage(msg, client);
 
 			default:
