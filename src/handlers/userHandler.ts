@@ -2,7 +2,6 @@ import { Message } from "discord.js";
 
 import WebSocket from "../services/websocket";
 import { UserCmds } from "../types/constants";
-
 export default class UserHandler {
 
 	public static HandleMessage(msg: Message) {
@@ -15,10 +14,12 @@ export default class UserHandler {
 		if (arg == UserCmds.start) {
 			const userId: string = msg.author.id;
 			WebSocket.Start(userId);
+			msg.channel.send("> Automation Started");
 		}
 		if (arg == UserCmds.stop) {
 			const userId: string = msg.author.id;
 			WebSocket.Stop(userId);
+			msg.channel.send("> Automation Stopped");
 		}
 		else if (arg == UserCmds.ping) {
 			msg.channel.send("epic pong");
