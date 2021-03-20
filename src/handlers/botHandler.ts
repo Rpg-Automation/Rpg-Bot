@@ -1,28 +1,37 @@
-import { Message, Client, GuildMember, Collection, Guild } from "discord.js";
+import { Message, Client, GuildMember, Collection, Guild, User, MessageEmbed, EmbedField } from "discord.js";
+import parse from "parse-duration";
 
 import WebSocket from "../services/websocket";
+import * as T from "../types/parsed";
 
 export default class BotHandler {
 
-	public static HandleMessage(msg: Message, client: Client) {
+	public static async HandleMessage(msg: Message, client: Client): Promise<void> {
+		if (/.*(epic guard).*/gmi.test(msg.content)) {
 
-		if (/.*(epic guard).*(everything seems fine)/gmi.test(msg.content)) {
-			const guildId: string = msg.guild.id;
-			const guild: Guild = client.guilds.cache.find(a => a.id == guildId);
-			const user: string = msg.content.split("fine ")[1].split(",")[0];
+			if (/.*(everything seems fine)/gmi.test(msg.content)) {
+				const guildId: string = msg.guild.id;
+				const guild: Guild = client.guilds.cache.find(a => a.id == guildId);
+				const matches: RegExpMatchArray = msg.content.match(/.*\*\*(.*)\*\*.*/);
+				if (!matches.length) return;
 
-			const userId: string = guild.members.cache.find(a => a.user.username.trim() == user.trim()).id;
-			WebSocket.Resume(userId);
-			return msg.channel.send("> Automation Started");
+				const user: string = matches[1];
+				//const member: GuildMember = guild.members.cache.find(m => m.user.username == user);
+				const userId: string = guild.members.cache.find(a => a.user.username.trim() == user.trim()).id;
+				WebSocket.Resume(userId);
+				msg.channel.send("> Automation Started");
+				return;
+			}
+
+			if (/.*(stop there).*/gmi.test(msg.content)) {
+				BotHandler.PauseAutomation(msg);
+				return;
+			}
 		}
-		if (/.*(epic guard).*(stop there).*/gmi.test(msg.content)) {
-			const mention: GuildMember = msg.mentions.members.first();
-			if (!mention) return;
 
-			const userId: string = mention.id;
-			client.users.cache.get(userId).send(`<@${userId.toString()}> Epic Guard Detected! ${msg.url}`);
-			WebSocket.Pause(userId);
-			msg.channel.send("> Automation Stopped");
+		if (/.*(type `rpg jail`).*/gmi.test(msg.content)) {
+			BotHandler.PauseAutomation(msg);
+			return;
 		}
 	}
 
@@ -30,17 +39,16 @@ export default class BotHandler {
 
 		// The first player who types the following sentence will get it!
 		// Find more commands with rpg help
-
-		if (!msg.embeds[0].footer.text) return;
+		const embed: MessageEmbed = msg.embeds[0];
+		if (!embed.footer) return;
 
 		interface IMentioned {
 			id: string
 		}
 
-		let users: IMentioned[] = [];
+		if (/.*(this is an event).*/gmi.test(embed.footer.text)) {
 
-		if (/.*(this is an event).*/gmi.test(msg.embeds[0].footer.text)) {
-
+			const users: IMentioned[] = [];
 			const recents: Collection<string, Message> = await msg.channel.messages.fetch({ limit: 5 });
 
 			recents.forEach((msg: Message): void => {
@@ -50,7 +58,38 @@ export default class BotHandler {
 				users.push({ id: msg.author.id });
 				msg.channel.send(`<@${msg.author.id.toString()}> active world event`);
 			});
-			users = [];
+
+			return;
 		}
+
+		if (/.*("rpg rd").*/gmi.test(embed.footer.text)) {
+			const commands: T.Command[] = [];
+
+			const fields: EmbedField[] = embed.fields;
+			fields.forEach((field: EmbedField): void => {
+				const cooldowns: string[] = field.value.split("\n");
+				cooldowns.forEach((cooldown: string): void => {
+					const data: RegExpMatchArray = cooldown.match(/.*`(.*)`(.*\(\*\*(.*)\*\*\))?/);
+					if (!data.length) return;
+
+					const command: T.Command = new T.Command(data[1], parse(data[3]));
+					commands.push(command);
+				});
+			});
+
+			if (!commands) return;
+
+			WebSocket.Cooldowns(msg.author.id, commands);
+		}
+	}
+
+	private static PauseAutomation(msg: Message) {
+		const mention: GuildMember = msg.mentions.members.first();
+		if (!mention) return;
+
+		const user: User = mention.user;
+		user.send(`<@${user.id}> Epic Guard Detected! ${msg.url}`);
+		WebSocket.Pause(user.id);
+		return msg.channel.send("> Automation Stopped");
 	}
 }

@@ -1,6 +1,7 @@
 import { io, Socket } from "socket.io-client";
 
 import { SocketUri } from "../types/constants";
+import * as T from "../types/parsed";
 import config from "../helpers/config";
 
 export default class WebSocket {
@@ -31,5 +32,9 @@ export default class WebSocket {
 
 	public static Resume(id: string) {
 		WebSocket.socket.emit("request-resume", id);
+	}
+
+	public static Cooldowns(id: string, commands: T.Command[]) {
+		WebSocket.socket.emit("update-cooldowns", { id, commands });
 	}
 }

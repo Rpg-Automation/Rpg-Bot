@@ -9,15 +9,18 @@ import UserHandler from "./handlers/userHandler";
 
 const client: Client = new Client();
 
+let self: string;
+
 client.on("ready", () => {
-	WebSocket.Creds(Ids.self);
 	console.log(`${new Date}\nLogged in as ${client.user.tag} in ${config.NODE_ENV}`);
+	self = client.user.id;
+	WebSocket.Creds(self);
 });
 
 client.on("message", async (msg: Message) => {
 	try {
 		switch (msg.author.id) {
-			case Ids.self:
+			case self:
 				return;
 
 			case Ids.rpgBot:
@@ -30,7 +33,7 @@ client.on("message", async (msg: Message) => {
 				return UserHandler.HandleMessage(msg);
 		}
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 	}
 });
 
