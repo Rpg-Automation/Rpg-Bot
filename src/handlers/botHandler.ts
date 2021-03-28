@@ -3,6 +3,8 @@ import parse from "parse-duration";
 
 import WebSocket from "../services/websocket";
 import * as T from "../types/parsed";
+import Parser from "../helpers/parser";
+import { CommandType } from "../types/constants";
 
 export default class BotHandler {
 
@@ -16,7 +18,6 @@ export default class BotHandler {
 				if (!matches.length) return;
 
 				const user: string = matches[1];
-				//const member: GuildMember = guild.members.cache.find(m => m.user.username == user);
 				const userId: string = guild.members.cache.find(a => a.user.username.trim() == user.trim()).id;
 				WebSocket.Resume(userId);
 				msg.channel.send("> Automation Started");
@@ -35,7 +36,7 @@ export default class BotHandler {
 		}
 	}
 
-	public static async HandleEmbed(msg: Message) {
+	public static async HandleEmbed(msg: Message, client: Client) {
 
 		// The first player who types the following sentence will get it!
 		// Find more commands with rpg help
@@ -65,6 +66,15 @@ export default class BotHandler {
 		if (/.*("rpg rd").*/gmi.test(embed.footer.text)) {
 			const commands: T.Command[] = [];
 
+			const guildId: string = msg.guild.id;
+			const guild: Guild = client.guilds.cache.find(a => a.id == guildId);
+			const matches: RegExpMatchArray = embed.author.name.match(/(.*)'s cooldowns/);
+			if (!matches.length) return;
+
+			const user: string = matches[1];
+			const userId: string = guild.members.cache.find(a => a.user.username.trim() == user.trim()).id;
+			if (!userId) return;
+
 			const fields: EmbedField[] = embed.fields;
 			fields.forEach((field: EmbedField): void => {
 				const cooldowns: string[] = field.value.split("\n");
@@ -72,14 +82,17 @@ export default class BotHandler {
 					const data: RegExpMatchArray = cooldown.match(/.*`(.*)`(.*\(\*\*(.*)\*\*\))?/);
 					if (!data.length) return;
 
-					const command: T.Command = new T.Command(data[1], parse(data[3]));
+					const type: CommandType = Parser.CommandType(data[1]);
+					if (type == CommandType.None) return;
+
+					const command: T.Command = new T.Command(type, parse(data[3]));
 					commands.push(command);
 				});
 			});
 
 			if (!commands) return;
 
-			WebSocket.Cooldowns(msg.author.id, commands);
+			WebSocket.Cooldowns(userId, commands);
 		}
 	}
 

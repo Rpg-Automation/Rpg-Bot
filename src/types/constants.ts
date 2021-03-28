@@ -21,3 +21,20 @@ export enum UserCmds {
 	ping = "ping",
 	pong = "pong"
 }
+
+export enum CommandType {
+	None,
+	Daily,
+	Weekly,
+	Lootbox,
+	Vote,
+	Hunt,
+	Adventure,
+	Training,
+	Duel,
+	Quest,
+	Working,
+	Horse,
+	Arena,
+	Dungeon
+}

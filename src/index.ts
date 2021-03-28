@@ -25,7 +25,7 @@ client.on("message", async (msg: Message) => {
 
 			case Ids.rpgBot:
 				if (msg.embeds.length >= 1) {
-					await BotHandler.HandleEmbed(msg);
+					await BotHandler.HandleEmbed(msg, client);
 				}
 				return BotHandler.HandleMessage(msg, client);
 
