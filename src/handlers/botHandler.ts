@@ -90,7 +90,7 @@ export default class BotHandler {
 				});
 			});
 
-			if (!commands) return;
+			if (commands.length < 1) return;
 
 			WebSocket.Cooldowns(userId, commands);
 		}
